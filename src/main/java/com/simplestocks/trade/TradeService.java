@@ -2,6 +2,7 @@ package com.simplestocks.trade;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -21,7 +22,9 @@ public class TradeService {
 		validateTrade(trade);
 		repository.saveTrade(trade);
 		System.out.println("Punlishing trade " + trade);
-		tradeFeed.onNext(trade);
+		synchronized(tradeFeed){
+			tradeFeed.onNext(trade);
+		}
 	}
 
 	public Observable<Trade> getTradeFeed(){
@@ -29,9 +32,6 @@ public class TradeService {
 	}
 	
 	private void validateTrade(Trade trade) {
-		if(trade == null){
-			throw new IllegalArgumentException("Trade must be non null");
-		}
 		if(trade.getStockSymbol() == null){
 			throw new IllegalArgumentException("Stock symbol must be non null");
 		}
@@ -55,5 +55,9 @@ public class TradeService {
 		}
 	}
 
-
+	private void invalidIf(Object o, Predicate<Object> condition, String message){
+		if(condition.test(o)){
+			throw new IllegalArgumentException(message);
+		}
+	}
 }

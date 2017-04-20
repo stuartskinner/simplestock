@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.bytebuddy.description.modifier.SynchronizationState;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -11,14 +12,21 @@ public class StockService {
 
 	private Map<String, Stock> stocks = Collections.synchronizedMap(new HashMap<String, Stock>());
 	private PublishSubject<Stock> stockFeed;
+	private PublishSubject<Double> marketFeed;
+	
 	private Double gbceMarketIndex;
 	
 	public StockService(){
 		stockFeed = PublishSubject.create();
+		marketFeed = PublishSubject.create();
 	}
 	
 	public Observable<Stock> getStockFeed(){
 		return stockFeed;	
+	}
+	
+	public Observable<Double> getMarketFeed(){
+		return marketFeed;	
 	}
 	
 	public void registerCommonStock(String symbol, Double lastDividend){
@@ -42,14 +50,18 @@ public class StockService {
 		Stock stock = stocks.get(symbol); 
 		stock.setStockPrice(price);
 		recalculateGBCEIndex();
-		stockFeed.onNext(stock);
+		synchronized (stockFeed) {
+			stockFeed.onNext(stock);
+		}
 	}
 	
 	public void updateLastDividend(String symbol, Double lastDividend){
 		Stock stock = stocks.get(symbol);
 		if(stock instanceof CommonStock){
 			((CommonStock)stock).setLastDividend(lastDividend);
-			stockFeed.onNext(stock);
+			synchronized(stockFeed){
+				stockFeed.onNext(stock);
+			}
 		}else{
 			throw new IllegalArgumentException("Stock is not of type COMMON");
 		}
@@ -69,6 +81,9 @@ public class StockService {
 			}
 		}
 		this.gbceMarketIndex = Math.pow(priceProduct, 1D/count);
+		synchronized(marketFeed){
+			marketFeed.onNext(gbceMarketIndex);
+		}
 	}
 
 }
