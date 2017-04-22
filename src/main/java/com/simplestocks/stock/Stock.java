@@ -4,7 +4,7 @@ public abstract class Stock {
 
 	private String symbol;
 	private StockType type;
-	private Double stockPrice;
+	private Double stockPrice = 0D;
 
 	public Stock(String symbol, StockType type) {
 		this.symbol = symbol;

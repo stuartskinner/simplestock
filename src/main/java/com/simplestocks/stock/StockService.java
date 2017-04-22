@@ -2,7 +2,9 @@ package com.simplestocks.stock;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +21,7 @@ public class StockService {
 	private PublishSubject<Stock> stockFeed;
 	private PublishSubject<Double> marketFeed;
 	
-	private Double gbceMarketIndex;
+	private volatile Double gbceMarketIndex;
 	private static final Logger LOG = LoggerFactory.getLogger(TradeService.class);
 	
 	public StockService(){
@@ -44,6 +46,10 @@ public class StockService {
 		LOG.info("registerPreferredStock " + symbol + " parValue " + fixedDividend);
 		Stock stock = new PreferredStock(symbol, parValue, fixedDividend);
 		stocks.put(stock.getSymbol(), stock);
+	}
+	
+	public Set<String> getStockSymbols(){
+		return new HashSet<String>(stocks.keySet());
 	}
 	
 	public Stock getStock(String symbol){
@@ -85,7 +91,8 @@ public class StockService {
 	public void recalculateGBCEIndex(){
 		Double priceProduct = 1D;
 		int count = 0;
-		for(Stock stock: stocks.values()){
+		HashMap<String,Stock> stockCopy = new HashMap<String,Stock>(stocks);
+		for(Stock stock: stockCopy.values()){
 			if(stock.getStockPrice() != null && stock.getStockPrice() > 0){
 				priceProduct = priceProduct * stock.getStockPrice();
 				count++;

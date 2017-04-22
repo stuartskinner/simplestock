@@ -55,13 +55,13 @@ public class TradeService {
 			throw new IllegalArgumentException("Quantity must be non null");
 		}
 		if(trade.getQuantity() <= 0){
-			throw new IllegalArgumentException("Quantity must be greater than zerp");
+			throw new IllegalArgumentException("Quantity must be greater than zero");
 		}
 		if(trade.getTradePrice() == null){
 			throw new IllegalArgumentException("Price must be non null");
 		}
 		if(trade.getTradePrice() <= 0){
-			throw new IllegalArgumentException("Price must be greater than zerp");
+			throw new IllegalArgumentException("Price must be greater than zero");
 		}
 		if(trade.getTradeType() == null){
 			throw new IllegalArgumentException("Type must be non null");

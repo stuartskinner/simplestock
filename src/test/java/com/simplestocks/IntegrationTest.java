@@ -41,7 +41,6 @@ public class IntegrationTest {
 		analytics.connect();
 		analytics.getStockFeed().subscribe(e -> stockService.updateStockPrice(e.getSymbol(), e.getNewStockPrice()));
 		
-		stockService.getStockFeed().subscribe(s -> System.out.println("Stock price change " + s));
 		stockService.registerCommonStock("TEA", 0D);
 		stockService.registerCommonStock("POP", 8D);
 		stockService.registerCommonStock("ALE", 23D);
