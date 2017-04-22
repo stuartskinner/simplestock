@@ -3,24 +3,37 @@ package com.simplestocks.trade.analytics;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.simplestocks.trade.Trade;
+import com.simplestocks.trade.TradeService;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.observers.TestSubscriber;
+import rx.schedulers.TestScheduler;
 import rx.subjects.PublishSubject;
 
 public class TradeAnalytics {
 
 	private Observable<Trade> tradeStream;
 	private PublishSubject<StockPriceChangeEvent> stockChangeFeed;
-
+	private Scheduler scheduler;
+	private static final Logger LOG = LoggerFactory.getLogger(TradeAnalytics.class);
+	
 	public TradeAnalytics(Observable<Trade> tradeStream) {
 		this.tradeStream = tradeStream;
 		this.stockChangeFeed = PublishSubject.create();
 	}
 
 	
+	public TradeAnalytics(Observable<Trade> tradeStream, Scheduler scheduler) {
+		this(tradeStream);
+		this.scheduler = scheduler;
+	}
+
+
 	public void processTradeEventWindow(Observable<Trade> tradeFeed,
 			PublishSubject<StockPriceChangeEvent> publishFeed) {
 		tradeFeed.groupBy(t -> t.getStockSymbol()).subscribe(
@@ -32,7 +45,7 @@ public class TradeAnalytics {
 	}
 
 	public void useSlidingTimeWindow(Long window, Long interval, TimeUnit unit) {
-		tradeStream.window(window, interval, unit).subscribe(obs -> processTradeEventWindow(obs, stockChangeFeed));
+		tradeStream.window(window, interval, unit, scheduler).subscribe(obs -> processTradeEventWindow(obs, stockChangeFeed));
 	}
 	
 	public void useFixedSizeWindow(Integer windowSize){

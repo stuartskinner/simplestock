@@ -4,8 +4,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.bytebuddy.description.modifier.SynchronizationState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.simplestocks.trade.TradeService;
+
 import rx.Observable;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 public class StockService {
@@ -15,6 +20,7 @@ public class StockService {
 	private PublishSubject<Double> marketFeed;
 	
 	private Double gbceMarketIndex;
+	private static final Logger LOG = LoggerFactory.getLogger(TradeService.class);
 	
 	public StockService(){
 		stockFeed = PublishSubject.create();
@@ -22,11 +28,11 @@ public class StockService {
 	}
 	
 	public Observable<Stock> getStockFeed(){
-		return stockFeed;	
+		return stockFeed.observeOn(Schedulers.computation());	
 	}
 	
 	public Observable<Double> getMarketFeed(){
-		return marketFeed;	
+		return marketFeed.observeOn(Schedulers.computation());	
 	}
 	
 	public void registerCommonStock(String symbol, Double lastDividend){
@@ -35,18 +41,22 @@ public class StockService {
 	}
 	
 	public void registerPreferredStock(String symbol, Double parValue, Double fixedDividend){
+		LOG.info("registerPreferredStock " + symbol + " parValue " + fixedDividend);
 		Stock stock = new PreferredStock(symbol, parValue, fixedDividend);
 		stocks.put(stock.getSymbol(), stock);
 	}
 	
 	public Stock getStock(String symbol){
+		LOG.info("getStock " + symbol);
 		return stocks.get(symbol);
 	}
 	
 	public void updateStockPrice(String symbol, Double price){
+		LOG.info("updateStockPrice " + symbol + " " + price);
 		if(!stocks.containsKey(symbol)){
 			throw new IllegalArgumentException("Invalid stock symbol");
 		}
+		
 		Stock stock = stocks.get(symbol); 
 		stock.setStockPrice(price);
 		recalculateGBCEIndex();
@@ -56,6 +66,7 @@ public class StockService {
 	}
 	
 	public void updateLastDividend(String symbol, Double lastDividend){
+		LOG.info("updateLastDividend " + symbol + " " + lastDividend);
 		Stock stock = stocks.get(symbol);
 		if(stock instanceof CommonStock){
 			((CommonStock)stock).setLastDividend(lastDividend);
@@ -81,6 +92,7 @@ public class StockService {
 			}
 		}
 		this.gbceMarketIndex = Math.pow(priceProduct, 1D/count);
+		LOG.info("Recalculated GBCE market index " + gbceMarketIndex);
 		synchronized(marketFeed){
 			marketFeed.onNext(gbceMarketIndex);
 		}

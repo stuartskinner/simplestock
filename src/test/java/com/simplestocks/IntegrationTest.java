@@ -5,13 +5,23 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
+
+import com.simplestocks.stock.Stock;
 import com.simplestocks.stock.StockService;
 import com.simplestocks.trade.Trade;
 import com.simplestocks.trade.TradeRepository;
 import com.simplestocks.trade.TradeService;
 import com.simplestocks.trade.TradeType;
 import com.simplestocks.trade.analytics.TradeAnalytics;
+
+import rx.observers.TestObserver;
+import rx.observers.TestSubscriber;
+import rx.schedulers.Schedulers;
+import rx.subjects.TestSubject;
 
 public class IntegrationTest {
 
@@ -49,11 +59,21 @@ public class IntegrationTest {
 		tradeService.trade(new Trade("JOE", 1000, 120D, TradeType.SELL, new Date()));
 		tradeService.trade(new Trade("GIN", 100, 100D, TradeType.BUY, new Date()));
 		
+		TestSubscriber<Stock> stockSub = new TestSubscriber<>();
+		TestSubscriber<Double> marketSub = new TestSubscriber<>();
+		
+		stockService.getStockFeed().subscribe(stockSub);
+		stockService.getMarketFeed().subscribe(marketSub);
+		
+		await().timeout(500, TimeUnit.MILLISECONDS).until(stockSub::getValueCount, equalTo(5));
+		
 		assertEquals(97.46641791044776D, stockService.getStock("TEA").getStockPrice(), 0D);
 		assertEquals(80.97595190380761D, stockService.getStock("POP").getStockPrice(), 0D);
 		assertEquals(369.1685912240185D, stockService.getStock("GIN").getStockPrice(), 0D);
 		assertEquals(205.69288389513108D, stockService.getStock("ALE").getStockPrice(), 0D);
 		assertEquals(111.31861912846632D, stockService.getStock("JOE").getStockPrice(), 0D);
+		
+		await().timeout(500, TimeUnit.MILLISECONDS).until(marketSub::getValueCount, equalTo(5));
 		
 		assertEquals(146.16539945993313D, stockService.getGBCEIndex(), 0D);
 	}

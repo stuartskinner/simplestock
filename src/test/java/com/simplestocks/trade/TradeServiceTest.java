@@ -1,11 +1,15 @@
 package com.simplestocks.trade;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -90,6 +94,7 @@ public class TradeServiceTest {
 		TestSubscriber<Trade> sub = new TestSubscriber<Trade>();
 		tradeService.getTradeFeed().subscribe(sub);
 		tradeService.trade(trade);
+		await().timeout(500, TimeUnit.MILLISECONDS).until(sub::getValueCount, equalTo(1));
 		sub.assertValue(trade);
 	}
 	

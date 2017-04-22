@@ -1,11 +1,17 @@
 package com.simplestocks.stock;
 
 import static org.junit.Assert.assertEquals;
+import static org.awaitility.Awaitility.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 
+import java.util.concurrent.TimeUnit;
+
+import org.awaitility.Awaitility;
+
+import static org.hamcrest.Matchers.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +22,7 @@ import com.simplestocks.stock.CommonStock;
 import com.simplestocks.stock.Stock;
 import com.simplestocks.stock.StockService;
 
+import net.bytebuddy.implementation.bytecode.assign.Assigner.EqualTypesOnly;
 import rx.observers.TestSubscriber;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -68,6 +75,8 @@ public class StockServiceTest {
 		stockService.getStockFeed().subscribe(sub);
 		stockService.registerCommonStock("AAA", 200D);
 		stockService.updateStockPrice("AAA", 140.44D);
+		await().timeout(500, TimeUnit.MILLISECONDS).until(sub::getValueCount, equalTo(1));
+		sub.assertNoErrors();
 		sub.assertValue(stockService.getStock("AAA"));
 	}
 
@@ -77,6 +86,8 @@ public class StockServiceTest {
 		stockService.getStockFeed().subscribe(sub);
 		stockService.registerCommonStock("AAA", 200D);
 		stockService.updateLastDividend("AAA", 20D);
+		await().timeout(500, TimeUnit.MILLISECONDS).until(sub::getValueCount, equalTo(1));
+		sub.assertNoErrors();
 		sub.assertValue(stockService.getStock("AAA"));
 	}
 	

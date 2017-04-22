@@ -4,14 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import rx.Observable;
+import rx.Scheduler;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 public class TradeService {
 
 	private TradeRepository repository;
 	private PublishSubject<Trade> tradeFeed;
-
+	private static final Logger LOG = LoggerFactory.getLogger(TradeService.class);
+	
+	
 	public TradeService(TradeRepository repository){
 		tradeFeed = PublishSubject.create();
 		this.repository = repository;
@@ -19,19 +26,28 @@ public class TradeService {
 	
 	
 	public void trade(Trade trade) {
-		validateTrade(trade);
-		repository.saveTrade(trade);
-		System.out.println("Punlishing trade " + trade);
-		synchronized(tradeFeed){
-			tradeFeed.onNext(trade);
+		LOG.info("trade " + trade);
+		try{
+			validateTrade(trade);
+			repository.saveTrade(trade);
+			synchronized(tradeFeed){
+				tradeFeed.onNext(trade);
+			}
+			LOG.info("trade success " + trade);
+		}catch(IllegalArgumentException e){
+			LOG.error("trade failed validation " + e.getMessage() + " " + trade);
+			throw e;
 		}
 	}
 
 	public Observable<Trade> getTradeFeed(){
-		return tradeFeed;
+		return tradeFeed.observeOn(Schedulers.computation());
 	}
 	
 	private void validateTrade(Trade trade) {
+		if(trade == null){
+			throw new IllegalArgumentException("Trade must be non null");
+		}
 		if(trade.getStockSymbol() == null){
 			throw new IllegalArgumentException("Stock symbol must be non null");
 		}
@@ -52,12 +68,6 @@ public class TradeService {
 		}
 		if(trade.getTimestamp() == null){
 			throw new IllegalArgumentException("Timestamp must be non null");
-		}
-	}
-
-	private void invalidIf(Object o, Predicate<Object> condition, String message){
-		if(condition.test(o)){
-			throw new IllegalArgumentException(message);
 		}
 	}
 }
