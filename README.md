@@ -1,7 +1,17 @@
 # Simple stocks
 
-## Specification
+## Super Simple Stocks
 
+A super simple stocks simulation.
+
+To build
+
+    mvn package
+
+
+To run
+
+    java -jar target/simplestock-0.0.1-SNAPSHOT.jar
 
 
 ## Domain Assumptions
@@ -54,6 +64,8 @@ The code presented is a simplified sketch of the fully scaled solution presented
 
 
 In essence each of the service components defined within the solution TradeService, StockService would be deployed as independent services with REST API's and fronted by a load balancing capability to allow these to scale. The analytics and notification components would be replaced with Apache Kafka and KafkaStreams. Kafka would allow a resiliant persistent and highly available messaging channel which would support partitioning of the event streams across a definable set of partitions essentially allowing the analytics capabilities to scale horizontally as trade volumes increase. 
+
+Extend with a more sophisticated multi threaded simulator.
 
 ... And work out how to test time windows successfully. Just about managed to do this!
 
