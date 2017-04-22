@@ -18,9 +18,11 @@ import com.simplestocks.trade.TradeService;
 import com.simplestocks.trade.TradeType;
 import com.simplestocks.trade.analytics.TradeAnalytics;
 
+import rx.Scheduler;
 import rx.observers.TestObserver;
 import rx.observers.TestSubscriber;
 import rx.schedulers.Schedulers;
+import rx.schedulers.TestScheduler;
 import rx.subjects.TestSubject;
 
 public class IntegrationTest {
@@ -28,15 +30,17 @@ public class IntegrationTest {
 	private TradeService tradeService;
 	private StockService stockService;
 	private TradeAnalytics analytics;
+	private TestScheduler scheduler;
 	
 	@Before
 	public void setUp(){
+		scheduler = Schedulers.test();
 		tradeService = new TradeService(new TradeRepository());
-		analytics = new TradeAnalytics(tradeService.getTradeFeed());
+		analytics = new TradeAnalytics(tradeService.getTradeFeed(), 3, 1, TimeUnit.SECONDS, scheduler);
 		stockService = new StockService();
-		analytics.useFixedSizeWindow(10);
+		analytics.connect();
 		analytics.getStockFeed().subscribe(e -> stockService.updateStockPrice(e.getSymbol(), e.getNewStockPrice()));
-		//analytics.getStockFeed().subscribe(e -> System.out.println("SFE" + e));
+		
 		stockService.getStockFeed().subscribe(s -> System.out.println("Stock price change " + s));
 		stockService.registerCommonStock("TEA", 0D);
 		stockService.registerCommonStock("POP", 8D);
@@ -48,6 +52,13 @@ public class IntegrationTest {
 	
 	@Test
 	public void givenSomeTradeDataValidateSystem() throws InterruptedException{
+		TestSubscriber<Stock> stockSub = new TestSubscriber<>();
+		TestSubscriber<Double> marketSub = new TestSubscriber<>();
+		TestSubscriber<Trade> tradeSub = new TestSubscriber<>();
+		stockService.getStockFeed().subscribe(stockSub);
+		stockService.getMarketFeed().subscribe(marketSub);
+		tradeService.getTradeFeed().subscribe(tradeSub);
+		
 		tradeService.trade(new Trade("TEA", 50, 102D, TradeType.BUY, new Date()));
 		tradeService.trade(new Trade("POP", 55, 105D, TradeType.BUY, new Date()));
 		tradeService.trade(new Trade("ALE", 456, 210D, TradeType.BUY, new Date()));
@@ -59,11 +70,9 @@ public class IntegrationTest {
 		tradeService.trade(new Trade("JOE", 1000, 120D, TradeType.SELL, new Date()));
 		tradeService.trade(new Trade("GIN", 100, 100D, TradeType.BUY, new Date()));
 		
-		TestSubscriber<Stock> stockSub = new TestSubscriber<>();
-		TestSubscriber<Double> marketSub = new TestSubscriber<>();
+		await().timeout(500, TimeUnit.MILLISECONDS).until(tradeSub::getValueCount, equalTo(10));
 		
-		stockService.getStockFeed().subscribe(stockSub);
-		stockService.getMarketFeed().subscribe(marketSub);
+		scheduler.advanceTimeBy(3, TimeUnit.SECONDS);
 		
 		await().timeout(500, TimeUnit.MILLISECONDS).until(stockSub::getValueCount, equalTo(5));
 		

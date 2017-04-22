@@ -1,34 +1,25 @@
 package com.simplestocks.stock;
 
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
-import static org.awaitility.Awaitility.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.verify;
 
 import java.util.concurrent.TimeUnit;
 
-import org.awaitility.Awaitility;
-
-import static org.hamcrest.Matchers.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.simplestocks.stock.CommonStock;
-import com.simplestocks.stock.Stock;
-import com.simplestocks.stock.StockService;
-
-import net.bytebuddy.implementation.bytecode.assign.Assigner.EqualTypesOnly;
 import rx.observers.TestSubscriber;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StockServiceTest {
 
 	private StockService stockService;
+			
 
 	@Before
 	public void setUp() {
@@ -127,7 +118,7 @@ public class StockServiceTest {
 		stockService.registerCommonStock("AAA", 25D);
 		stockService.updateStockPrice("AAA", 250D);
 		Stock stock = stockService.getStock("AAA");
-		assertEquals("Common stock dividend yield incorrect", 0.1D, stock.getDividendYield(), 0.1D);
+		assertEquals("Common stock dividend yield incorrect", 0.1D, stock.getDividendYield(), 0.05D);
 	}
 
 	@Test
@@ -144,6 +135,5 @@ public class StockServiceTest {
 		stockService.updateStockPrice("EEE", 200D);
 
 		assertEquals("GBCE index is incorrect", 181.13689640194661D, stockService.getGBCEIndex(), 0D);
-
 	}
 }

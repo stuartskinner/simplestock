@@ -26,9 +26,9 @@ public class TradeAnalyticsTest {
 		obs = PublishSubject.create();
 		sub = new TestSubscriber<StockPriceChangeEvent>();
 		scheduler = new TestScheduler();
-		service = new TradeAnalytics(obs, scheduler);
+		service = new TradeAnalytics(obs, 3, 1, TimeUnit.SECONDS, scheduler);
 		service.getStockFeed().subscribe(sub);
-		service.useSlidingTimeWindow(3L, 1L, TimeUnit.SECONDS);
+		service.connect();
 	}
 	
 	@Test

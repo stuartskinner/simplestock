@@ -15,15 +15,15 @@ public class SimpleStocks {
 	
 	
 	public static void main(String args[]) {
-		TradeService tradeService = new TradeService(new TradeRepository());
-		TradeAnalytics analytics = new TradeAnalytics(tradeService.getTradeFeed());
-		StockService stockService = new StockService();
-
-		analytics.useSlidingTimeWindow(15L, 1L, TimeUnit.MINUTES);
-
-		analytics.getStockFeed().subscribe(e -> stockService.updateStockPrice(e.getSymbol(), e.getNewStockPrice()));
-
-		stockService.getStockFeed().subscribe(s -> System.out.println("Stock price change " + s));
+//		TradeService tradeService = new TradeService(new TradeRepository());
+//		TradeAnalytics analytics = new TradeAnalytics(tradeService.getTradeFeed());
+//		StockService stockService = new StockService();
+//
+//		analytics.useSlidingTimeWindow(15L, 1L, TimeUnit.MINUTES);
+//
+//		analytics.getStockFeed().subscribe(e -> stockService.updateStockPrice(e.getSymbol(), e.getNewStockPrice()));
+//
+//		stockService.getStockFeed().subscribe(s -> System.out.println("Stock price change " + s));
 		
 		// TradeSimulator simulator = new TradeSimulator(tradeService,
 		// stockService);

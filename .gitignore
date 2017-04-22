@@ -4,6 +4,7 @@
 *.ear
 *.class
 
+
 .project
 .metadata
 bin/**
