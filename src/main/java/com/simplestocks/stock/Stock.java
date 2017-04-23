@@ -19,7 +19,7 @@ public abstract class Stock {
 	}
 	
 	public Stock(Stock source, Double newStockPrice){
-		this(source.symbol, source.type);
+		this(source.symbol, source.type, source.lastDividend);
 		this.stockPrice = newStockPrice;
 	}
 	
@@ -60,6 +60,15 @@ public abstract class Stock {
 		return lastDividend;
 	}
 
+
+
+	@Override
+	public String toString() {
+		return "Stock [symbol=" + symbol + ", type=" + type + ", stockPrice=" + stockPrice + ", getDividend()="
+				+ getDividend() + ", getPToERatio()=" + getPToERatio() + ", getDividendYield()=" + getDividendYield()
+				+ "]";
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -87,14 +96,4 @@ public abstract class Stock {
 			return false;
 		return true;
 	}
-
-	@Override
-	public String toString() {
-		return "Stock [symbol=" + symbol + ", type=" + type + ", stockPrice=" + stockPrice + ", getDividend()="
-				+ getDividend() + ", getPToERatio()=" + getPToERatio() + ", getDividendYield()=" + getDividendYield()
-				+ "]";
-	}
-	
-	
-
 }

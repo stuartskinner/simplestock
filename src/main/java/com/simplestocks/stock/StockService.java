@@ -22,7 +22,7 @@ public class StockService {
 	private PublishSubject<Double> marketFeed;
 
 	private volatile Double gbceMarketIndex;
-	private static final Logger LOG = LoggerFactory.getLogger(TradeService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(StockService.class);
 
 	public StockService() {
 		stockFeed = PublishSubject.create();

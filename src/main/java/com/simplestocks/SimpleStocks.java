@@ -14,8 +14,6 @@ import com.simplestocks.trade.TradeService;
 import com.simplestocks.trade.TradeType;
 import com.simplestocks.trade.analytics.TradeAnalytics;
 
-import rx.schedulers.TestScheduler;
-
 public class SimpleStocks {
 
 	private TradeService tradeService;

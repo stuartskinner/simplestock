@@ -110,6 +110,7 @@ public class StockServiceTest {
 		stockService.registerCommonStock("AAA", 20D);
 		stockService.updateStockPrice("AAA", 400D);
 		Stock stock = stockService.getStock("AAA");
+		assertEquals("Stock price not updated", 400D, stock.getStockPrice(), 0D);
 		assertEquals("Common stock p to e incorrect", 20D, stock.getPToERatio(), 0D);
 	}
 
@@ -118,7 +119,7 @@ public class StockServiceTest {
 		stockService.registerCommonStock("AAA", 25D);
 		stockService.updateStockPrice("AAA", 250D);
 		Stock stock = stockService.getStock("AAA");
-		assertEquals("Common stock dividend yield incorrect", 0.1D, stock.getDividendYield(), 0.05D);
+		assertEquals("Common stock dividend yield incorrect", 0.1D, stock.getDividendYield(), 0D);
 	}
 
 	@Test
