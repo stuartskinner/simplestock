@@ -10,7 +10,26 @@ public class PreferredStock extends Stock{
 		this.parValue = parValue;
 		this.fixedDividend = fixedDividend;
 	}
+	
+	public PreferredStock(PreferredStock source, Double newStockPrice){
+		super(source, newStockPrice);
+		this.parValue = source.parValue;
+		this.fixedDividend = source.fixedDividend;
+	}
+	
+	
+	@Override
+	public Stock cloneWithNewPrice(Double newStockPrice) {
+		return new PreferredStock(this, newStockPrice);
+	}
 
+	@Override
+	public Stock cloneWithNewLastDividend(Double newLastDividend) {
+		// np new last dividend for preferred stock not a mutating operation
+		// so just returb this
+		return this;
+	}
+	
 	@Override
 	public Double getDividend() {
 		return fixedDividend * parValue;
@@ -23,6 +42,8 @@ public class PreferredStock extends Stock{
 				+ ", getPToERatio()=" + getPToERatio() + ", getDividendYield()=" + getDividendYield() + ", getType()="
 				+ getType() + "]";
 	}
+
+
 	
 	
 }

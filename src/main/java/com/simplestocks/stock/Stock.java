@@ -4,12 +4,34 @@ public abstract class Stock {
 
 	private String symbol;
 	private StockType type;
-	private volatile Double stockPrice = 0D;
+	private Double stockPrice = 0D;
+	private Double lastDividend = 0D;
+	
 
 	public Stock(String symbol, StockType type) {
 		this.symbol = symbol;
 		this.type = type;
 	}
+
+	public Stock(String symbol, StockType type, Double lastDividend) {
+		this(symbol, type);
+		this.lastDividend = lastDividend;
+	}
+	
+	public Stock(Stock source, Double newStockPrice){
+		this(source.symbol, source.type);
+		this.stockPrice = newStockPrice;
+	}
+	
+	public Stock(Stock source, Double newStockPrice, Double newDividend){
+		this(source, newStockPrice);
+		this.lastDividend = newDividend;
+	}
+	
+	
+	public abstract Stock cloneWithNewPrice(Double newStockPrice);
+
+	public abstract Stock cloneWithNewLastDividend(Double newLastDividend);
 	
 	public String getSymbol() {
 		return this.symbol;
@@ -19,10 +41,7 @@ public abstract class Stock {
 		return stockPrice;
 	}
 
-	public void setStockPrice(Double stockPrice) {
-		this.stockPrice = stockPrice;
-	}
-
+	
 	public abstract Double getDividend();
 
 	public Double getPToERatio() {
@@ -35,6 +54,10 @@ public abstract class Stock {
 
 	public StockType getType() {
 		return type;
+	}
+	
+	public Double getLastDividend(){
+		return lastDividend;
 	}
 
 	@Override

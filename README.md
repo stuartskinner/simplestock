@@ -63,10 +63,6 @@ For the simplified example RxJava has been used to model the notification and su
 
 As always time runs out so a few thoughts on icky bits to tidy up and future theoretical evolution of the system.
 
-* Get rid of the icky cast and hierarchy problems in StockService
-
-* Make stock immutable and make price and dividend updates replace the entry in the stock map.
-
 * Improve the trade simulation.
 
 * Add a REST API to allow external interaction.
@@ -75,7 +71,7 @@ As always time runs out so a few thoughts on icky bits to tidy up and future the
 
 * Improve the structure of TradeAnalytics to separate out the windowing behaviour and allow addition of other calculations.
 
-* Sort out the windowing to use the trade timestamp rather than order of reciept.
+* Sort out the windowing to use the trade timestamp rather than order of receipt.
 
 * Improve the testing of the time window.
 
