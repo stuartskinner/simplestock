@@ -1,5 +1,6 @@
 # Simple stocks
 
+
 ## Super Simple Stocks
 
 A super simple stocks simulation.
@@ -60,13 +61,28 @@ For the simplified example RxJava has been used to model the notification and su
 
 ## Future Extension
 
+As always time runs out so a few thoughts on icky bits to tidy up and future theoretical evolution of the system.
+
+* Get rid of the icky cast and hierarchy problems in StockService
+
+* Make stock immutable and make price and dividend updates replace the entry in the stock map.
+
+* Improve the trade simulation.
+
+* Add a REST API to allow external interaction.
+
+* Sort out rounding
+
+* Improve the structure of TradeAnalytics to separate out the windowing behaviour and allow addition of other calculations.
+
+* Sort out the windowing to use the trade timestamp rather than order of reciept.
+
+* Improve the testing of the time window.
+
+This was a learning exercise in RxJava which was a fun challenge in and of itself, will leave the assessor to determine its applicability in this case, unsure i'd approach it in the same way second time around! 
+
+
 The code presented is a simplified sketch of the fully scaled solution presented below.
 
 
 In essence each of the service components defined within the solution TradeService, StockService would be deployed as independent services with REST API's and fronted by a load balancing capability to allow these to scale. The analytics and notification components would be replaced with Apache Kafka and KafkaStreams. Kafka would allow a resiliant persistent and highly available messaging channel which would support partitioning of the event streams across a definable set of partitions essentially allowing the analytics capabilities to scale horizontally as trade volumes increase. 
-
-Extend with a more sophisticated multi threaded simulator.
-
-... And work out how to test time windows successfully. Just about managed to do this!
-
-.... And fret about doubles vs BigDecimals!!
