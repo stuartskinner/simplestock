@@ -1,5 +1,10 @@
 package com.simplestocks.stock;
 
+/**
+ * Base stock class defines common attributes and
+ * operations. A stock represents a tradeable stake 
+ * in a public company.
+ */
 public abstract class Stock {
 
 	private String symbol;

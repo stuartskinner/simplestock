@@ -1,5 +1,13 @@
 package com.simplestocks.stock;
 
+/**
+ * Common stock specialisation of a stock. A common
+ * stock is characterized by 
+ * 
+ * a dividend equal to the value of the last paid dividend.
+ * 
+ *
+ */
 public class CommonStock extends Stock{
 	
 	public CommonStock(String symbol, Double lastDividend){

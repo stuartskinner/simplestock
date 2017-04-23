@@ -1,5 +1,15 @@
 package com.simplestocks.stock;
 
+/**
+ * Specialization of stock representing a preferred stock
+ * 
+ * A preferred stock essentially has characteristics more
+ * akin to a bond ie a fixed dividend.
+ * 
+ * The dividend of a preferred stock is calculated as
+ * fixedDividend * parValue
+ *
+ */
 public class PreferredStock extends Stock{
 
 	private Double fixedDividend;

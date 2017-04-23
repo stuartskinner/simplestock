@@ -14,6 +14,10 @@ import com.simplestocks.trade.TradeService;
 import com.simplestocks.trade.TradeType;
 import com.simplestocks.trade.analytics.TradeAnalytics;
 
+/**
+ * Main class for the simple stocks application, tees up the components
+ * amd wiring and starts the stock simulator.
+ */
 public class SimpleStocks {
 
 	private TradeService tradeService;

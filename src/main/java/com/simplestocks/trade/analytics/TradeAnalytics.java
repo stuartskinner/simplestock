@@ -12,6 +12,13 @@ import rx.Scheduler;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
+/**
+ * TradeAnalytics is responsible for processing the
+ * feed of trades obtained by the system. It uses these
+ * to calculate the volume weighted stock price updates
+ * and publishes these to the stockChangeFeed.
+ *
+ */
 public class TradeAnalytics {
 
 	private Observable<Trade> tradeStream;
@@ -52,6 +59,10 @@ public class TradeAnalytics {
 		return stockChangeFeed;
 	}
 
+
+	
+	
+	
 	static class TradeCollector {
 		private String symbol;
 		private Integer quantity = 0;

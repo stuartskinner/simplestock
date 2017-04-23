@@ -1,5 +1,9 @@
 package com.simplestocks.trade.analytics;
 
+/**
+ * £vent class representing a change in a stocks price.
+ *
+ */
 public class StockPriceChangeEvent {
 	private String symbol;
 	private Double newStockPrice;

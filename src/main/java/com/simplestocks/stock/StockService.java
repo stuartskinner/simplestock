@@ -9,12 +9,27 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.simplestocks.trade.TradeService;
-
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
+/**
+ * Service responsible for maintenance of the set
+ * of stocks trading on the market. 
+ * 
+ * Provides methods to get a stock, to update its last
+ * dividend and lists to a feed of changes to stock prices.
+ * 
+ * This class is also responsible for calculation of the market
+ * GBCE index as geometric mean of all trading stock prices.
+ * 
+ * This class provides two feeds to which interested parties may
+ * subscribe. The stock feed represents changes to any stock traded
+ * on the market. The market feed represents changes to the overall
+ * GBCE market index.
+ * 
+ *
+ */
 public class StockService {
 
 	private Map<String, Stock> stocks = Collections.synchronizedMap(new HashMap<String, Stock>());

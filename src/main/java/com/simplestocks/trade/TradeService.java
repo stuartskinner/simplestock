@@ -1,17 +1,18 @@
 package com.simplestocks.trade;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import rx.Observable;
-import rx.Scheduler;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
+/**
+ * TradeService is responsible for initial capture
+ * of trades into the system, their validation, persistence
+ * amd notification of the trade to interested parties.s
+ *
+ */
 public class TradeService {
 
 	private TradeRepository repository;

@@ -2,6 +2,10 @@ package com.simplestocks.trade;
 
 import java.util.Date;
 
+/**
+ * A representation of trade of a given quantity of
+ * a given stock at a given unit price. 
+ */
 public class Trade {
 	private String stockSymbol;
 	private Integer quantity;
