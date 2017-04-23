@@ -69,11 +69,17 @@ As always time runs out so a few thoughts on icky bits to tidy up and future the
 
 * Sort out rounding
 
-* Improve the structure of TradeAnalytics to separate out the windowing behaviour and allow addition of other calculations.
+* Improve the structure of TradeAnalytics to separate out the windowing behaviour and allow addition of other calculations. Essentially it should allow a given observer to be registered with
+a given buffering approach ie timewindow or fixed size.
 
 * Sort out the windowing to use the trade timestamp rather than order of receipt.
 
-* Improve the testing of the time window.
+* Improve the testing of the time window. Current
+approach does not validate actual sequence of stock
+change events emitted, this was primarilly due to 
+how to work out a predictable order of the observables issued by group by.
+
+* The 
 
 This was a learning exercise in RxJava which was a fun challenge in and of itself, will leave the assessor to determine its applicability in this case, unsure i'd approach it in the same way second time around! 
 
