@@ -2,7 +2,8 @@ package com.simplestocks.stock;
 
 public class CommonStock extends Stock{
 
-	private Double lastDividend;
+	private volatile Double lastDividend;
+	
 
 	public CommonStock(String symbol, Double lastDividend){
 		super(symbol, StockType.COMMON);

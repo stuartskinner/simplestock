@@ -76,6 +76,7 @@ public class StockService {
 		Stock stock = stocks.get(symbol);
 		if(stock instanceof CommonStock){
 			((CommonStock)stock).setLastDividend(lastDividend);
+			
 			synchronized(stockFeed){
 				stockFeed.onNext(stock);
 			}
